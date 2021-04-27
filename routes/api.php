@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\RegisterController;
 
 /*
@@ -21,4 +22,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
-
+     
+Route::middleware('auth:api')->group( function () {
+    Route::resource('users', UserController::class);
+});

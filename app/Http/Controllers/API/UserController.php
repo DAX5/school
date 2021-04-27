@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\API;
    
 use Validator;
+use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use App\Http\Resources\Role as RoleResource;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\User as UserResource;
 use App\Http\Controllers\API\BaseController as BaseController;
    
-class RoleController extends BaseController
+class UserController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -19,10 +20,10 @@ class RoleController extends BaseController
      */
     function __construct()
     {
-        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','store']]);
-        $this->middleware('permission:role-create', ['only' => ['create','store']]);
-        $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:user-list|user-create|user-edit|user-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:user-create', ['only' => ['create','store']]);
+        $this->middleware('permission:user-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:user-delete', ['only' => ['destroy']]);
     }
 
     /**
@@ -32,22 +33,9 @@ class RoleController extends BaseController
      */
     public function index()
     {
-        $roles = Role::all();
+        $users = User::all();
 
-        foreach($roles as &$role) {
-            $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")
-                ->where("role_has_permissions.role_id",$role->id)
-                ->select('id', 'name')
-                ->get();
-
-            $permissions = $rolePermissions->map(function ($aux) {
-                return collect($aux->toArray())->all();
-            })->toArray();
-
-            $role->permissions = $permissions;
-        }
-        
-        return $this->sendResponse(RoleResource::collection($roles), 'Roles retrieved successfully.');
+        return $this->sendResponse(UserResource::collection($users), 'Roles retrieved successfully.');
     }
 
     /**
@@ -61,86 +49,90 @@ class RoleController extends BaseController
         $input = $request->all();
    
         $validator = Validator::make($input, [
-            'name' => 'required|unique:roles,name',
-            'permission' => 'required',
+            'name'      => 'required',
+            'email'     => 'required|email|unique:users,email',
+            'password'  => 'required|min:8|same:confirm-password',
+            'roles'     => 'required'
         ]);
    
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
-
-        $all_permissions = DB::table('permissions')->get();
-        $permissions = [];
-
-        foreach($input['permission'] as $p) {
-            foreach($all_permissions as $permission) {
-                if($permission->name === $p['name']) {
-                    array_push($permissions, $permission->id);
-                }
-            }
-        }
+   
+        $input = $request->all();
+        $input['password'] = Hash::make($input['password']);
         
-        // return $this->sendResponse($permissions, 'Role created successfully.');
+        $user = User::create($input);
+        $user->assignRole($request->input('roles'));
    
-        $role = Role::create(['name' => $request->input('name')]);
-        $role->syncPermissions($permissions);
-   
-        return $this->sendResponse(new RoleResource($role), 'Role created successfully.');
+        return $this->sendResponse(new UserResource($user), 'User created successfully.');
     } 
    
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        $product = Role::find($id);
-  
-        if (is_null($product)) {
-            return $this->sendError('Role not found.');
+        if (is_null($user)) {
+            return $this->sendError('User not found.');
         }
    
-        return $this->sendResponse(new RoleResource($product), 'Role retrieved successfully.');
+        return $this->sendResponse(new UserResource($user), 'User retrieved successfully.');
     }
     
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Role $product)
+    public function update(Request $request, User $user)
     {
         $input = $request->all();
    
         $validator = Validator::make($input, [
-            'name' => 'required',
-            'detail' => 'required'
+            'name'      => 'required',
+            'email'     => 'required|email|unique:users,email,'.$user->id,
+            'password'  => 'nullable|min:8|same:confirm-password',
+            'roles'     => 'required'
         ]);
    
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
+
+        if(!empty($input['password'])){ 
+            $input['password'] = Hash::make($input['password']);
+        }else{
+            $input = Arr::except($input,array('password'));    
+        }
    
-        $product->name = $input['name'];
-        $product->detail = $input['detail'];
-        $product->save();
+        $user->update($input);
+        DB::table('model_has_roles')->where('model_id',$user->id)->delete();
+    
+        $user->assignRole($request->input('roles'));
    
-        return $this->sendResponse(new RoleResource($product), 'Role updated successfully.');
+        return $this->sendResponse(new UserResource($user), 'User updated successfully.');
     }
    
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Role $product)
+    public function destroy(User $user)
     {
-        $product->delete();
+        $admin = DB::table('roles')->first();
+        if($user->hasRole($admin->name)) {
+            return $this->sendError('Unable to remove a user with role '.$admin->name.'.');
+        }
+
+        $user->delete();
    
         return $this->sendResponse([], 'Role deleted successfully.');
     }
