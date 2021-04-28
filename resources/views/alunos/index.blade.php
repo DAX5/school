@@ -1,11 +1,11 @@
 @section('title')
-Professores
+Alunos
 @endsection
 
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Professores') }}
+            {{ __('Alunos') }}
         </h2>
     </x-slot>
 
@@ -14,9 +14,9 @@ Professores
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="container mt-5">
-                        <h2 class="mb-4">Professores 
-                            @can('professor-create')
-                                <a class="btn btn-primary" href="{{ route('professors.create') }}" title="Novo Professor"> Novo </a>
+                        <h2 class="mb-4">Alunos 
+                            @can('aluno-create')
+                                <a class="btn btn-primary" href="{{ route('alunos.create') }}" title="Novo Aluno"> Novo </a>
                             @endcan
                         </h2>
 
@@ -26,7 +26,7 @@ Professores
                                     <th>No</th>
                                     <th>Nome</th>
                                     <th>Email</th>
-                                    <th>Disciplina</th>
+                                    <th>Data Nascimento</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -49,12 +49,12 @@ Professores
         },
         processing: true,
         serverSide: true,
-        ajax: "{{ route('professors.list') }}",
+        ajax: "{{ route('alunos.list') }}",
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'name', name: 'name'},
             {data: 'email', name: 'email'},
-            {data: 'disciplina', name: 'disciplina'},
+            {data: 'nascimento', name: 'nascimento'},
             {
                 data: 'action', 
                 name: 'action', 

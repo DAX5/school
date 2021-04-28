@@ -16,7 +16,7 @@ Usuários
                     <div class="container mt-5">
                         <h2 class="mb-4">Usuários 
                             @can('user-create')
-                                <a class="btn btn-primary" href="{{ route('users.create') }}" title="Novo Usuário"> Criar </a>
+                                <a class="btn btn-primary" href="{{ route('users.create') }}" title="Novo Usuário"> Novo </a>
                             @endcan
                         </h2>
 

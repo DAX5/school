@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\ProfessorController;
 
 /*
@@ -39,4 +40,9 @@ Route::middleware('auth')->group( function () {
 Route::middleware('auth')->group( function () {
     Route::get('professors/list', [ProfessorController::class, 'getProfessors'])->name('professors.list');
     Route::resource('professors', ProfessorController::class)->middleware(['auth']);
+});
+
+Route::middleware('auth')->group( function () {
+    Route::get('alunos/list', [AlunoController::class, 'getAlunos'])->name('alunos.list');
+    Route::resource('alunos', AlunoController::class)->middleware(['auth']);
 });

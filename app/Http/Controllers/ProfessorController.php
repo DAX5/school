@@ -141,7 +141,7 @@ class ProfessorController extends Controller
     public function getProfessors(Request $request)
     {
         if ($request->ajax()) {
-            $data = Professor::latest()->get();
+            $data = Professor::orderBy('name', 'ASC')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('email', function($row) {

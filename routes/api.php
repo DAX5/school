@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\AlunoController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\ProfessorController;
 
@@ -30,4 +31,8 @@ Route::middleware('auth:api')->group( function () {
 
 Route::middleware('auth:api')->group( function () {
     Route::resource('professors', ProfessorController::class);
+});
+
+Route::middleware('auth:api')->group( function () {
+    Route::resource('alunos', AlunoController::class);
 });

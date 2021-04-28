@@ -4,14 +4,14 @@ namespace App\Http\Controllers\API;
    
 use Validator;
 use App\Models\User;
-use App\Models\Professor;
+use App\Models\Aluno;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Resources\Professor as ProfessorResource;
+use App\Http\Resources\Aluno as AlunoResource;
 use App\Http\Controllers\API\BaseController as BaseController;
    
-class ProfessorController extends BaseController
+class AlunoController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -20,10 +20,10 @@ class ProfessorController extends BaseController
      */
     function __construct()
     {
-        $this->middleware('permission:professor-list|professor-create|professor-edit|professor-delete', ['only' => ['index','show']]);
-        $this->middleware('permission:professor-create', ['only' => ['create','store']]);
-        $this->middleware('permission:professor-edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:professor-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:aluno-list|aluno-create|aluno-edit|aluno-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:aluno-create', ['only' => ['create','store']]);
+        $this->middleware('permission:aluno-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:aluno-delete', ['only' => ['destroy']]);
     }
 
     /**
@@ -33,9 +33,9 @@ class ProfessorController extends BaseController
      */
     public function index()
     {
-        $professors = Professor::all();
+        $alunos = Aluno::all();
 
-        return $this->sendResponse(ProfessorResource::collection($professors), 'Professores retrieved successfully.');
+        return $this->sendResponse(AlunoResource::collection($alunos), 'Alunoes retrieved successfully.');
     }
 
     /**
@@ -52,7 +52,7 @@ class ProfessorController extends BaseController
             'name'          => 'required',
             'email'         => 'required|email|unique:users,email',
             'password'      => 'required|min:8|same:confirm-password',
-            'disciplina'    => 'required'
+            'nascimento'    => 'required|date_format:Y-m-d'
         ]);
    
         if($validator->fails()){
@@ -63,45 +63,45 @@ class ProfessorController extends BaseController
         $input['password'] = Hash::make($input['password']);
         
         $user = User::create($input);
-        $user->assignRole(['Professor']);
+        $user->assignRole(['Aluno']);
         $input['user_id'] = $user->id;
 
-        $professor = Professor::create($input);
+        $aluno = Aluno::create($input);
 
-        return $this->sendResponse(new ProfessorResource($professor), 'Professor created successfully.');
+        return $this->sendResponse(new AlunoResource($aluno), 'Aluno created successfully.');
     } 
    
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Professor  $professor
+     * @param  \App\Models\Aluno  $aluno
      * @return \Illuminate\Http\Response
      */
-    public function show(Professor $professor)
+    public function show(Aluno $aluno)
     {
-        if (is_null($professor)) {
-            return $this->sendError('Professor not found.');
+        if (is_null($aluno)) {
+            return $this->sendError('Aluno not found.');
         }
    
-        return $this->sendResponse(new ProfessorResource($professor), 'Professor retrieved successfully.');
+        return $this->sendResponse(new AlunoResource($aluno), 'Aluno retrieved successfully.');
     }
     
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Professor  $professor
+     * @param  \App\Models\Aluno  $aluno
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Professor $professor)
+    public function update(Request $request, Aluno $aluno)
     {
         $input = $request->all();
    
         $validator = Validator::make($input, [
             'name'          => 'required',
-            'email'         => 'required|email|unique:users,email,'.$professor->user->id,
+            'email'         => 'required|email|unique:users,email,'.$aluno->user->id,
             'password'      => 'nullable|min:8|same:confirm-password',
-            'disciplina'    => 'required'
+            'nascimento'    => 'required|date_format:Y-m-d'
         ]);
    
         if($validator->fails()){
@@ -114,26 +114,26 @@ class ProfessorController extends BaseController
             $input = Arr::except($input,array('password'));    
         }
    
-        $user = $professor->user;
+        $user = $aluno->user;
         
         $user->update($input);
-        $professor->update($input);
+        $aluno->update($input);
    
-        return $this->sendResponse(new ProfessorResource($professor), 'Professor updated successfully.');
+        return $this->sendResponse(new AlunoResource($aluno), 'Aluno updated successfully.');
     }
    
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Professor  $professor
+     * @param  \App\Models\Aluno  $aluno
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Professor $professor)
+    public function destroy(Aluno $aluno)
     {
-        $user = $professor->user;
+        $user = $aluno->user;
         $user->delete();
-        $professor->delete();
+        $aluno->delete();
    
-        return $this->sendResponse([], 'Professor deleted successfully.');
+        return $this->sendResponse([], 'Aluno deleted successfully.');
     }
 }

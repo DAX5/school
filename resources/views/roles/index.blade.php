@@ -16,7 +16,7 @@ Papeis no sistema
                     <div class="container mt-5">
                         <h2 class="mb-4">Papeis no sistema 
                             @can('role-create')
-                                <a class="btn btn-primary" href="{{ route('roles.create') }}" title="Novo papel"> Criar </a>
+                                <a class="btn btn-primary" href="{{ route('roles.create') }}" title="Novo papel"> Novo </a>
                             @endcan
                         </h2>
 

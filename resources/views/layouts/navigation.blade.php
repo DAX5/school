@@ -20,6 +20,11 @@
                         {{ __('Professores') }}
                     </x-nav-link>
                     @endcan
+                    @can('aluno-list')
+                    <x-nav-link :href="route('alunos.index')" :active="request()->routeIs('alunos.index')">
+                        {{ __('Alunos') }}
+                    </x-nav-link>
+                    @endcan
                     @can('user-list')
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                         {{ __('Usuários') }}
@@ -84,6 +89,11 @@
             @can('professor-list')
             <x-responsive-nav-link :href="route('professors.index')" :active="request()->routeIs('professors.index')">
                 {{ __('Professores') }}
+            </x-responsive-nav-link>
+            @endcan
+            @can('aluno-list')
+            <x-responsive-nav-link :href="route('alunos.index')" :active="request()->routeIs('alunos.index')">
+                {{ __('Alunos') }}
             </x-responsive-nav-link>
             @endcan
             @can('user-list')
