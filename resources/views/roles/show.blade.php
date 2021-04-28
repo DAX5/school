@@ -26,7 +26,7 @@ Papel
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    <strong>Permissions:</strong>
+                                    <strong>Permissões:</strong>
                                     @if(!empty($rolePermissions))
                                         <ul>
                                         @foreach($rolePermissions as $v)
@@ -39,7 +39,7 @@ Papel
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                            <a class="btn btn-primary" href="{{ route('users.index') }}" title="Go back"> <i class="fas fa-backward "></i> </a>
+                            <a class="btn btn-primary" href="{{ route('roles.index') }}" title="Go back"> <i class="fas fa-backward "></i> </a>
                         </div>
                         
                     </div>

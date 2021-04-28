@@ -62,7 +62,7 @@ class UserController extends Controller
         $input['password'] = Hash::make($input['password']);
         
         $user = User::create($input);
-        $user->assignRole($request->input('roles'));
+        $user->assignRole([$input['role']]);
     
         Session::flash('success', 'Usuário criado com sucesso.');
         return redirect()->route('users.index');
@@ -88,7 +88,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::pluck('name','name')->all();
-        $userRole = $user->roles->pluck('name','name')->all();
+        $userRole = $user->roles->pluck('name')[0];
         
         return view('users.edit',compact('user','roles','userRole'));
     }
@@ -103,16 +103,16 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $input = $request->all();
-        if(!empty($input['password'])){ 
+        if(!empty($input['password'])) { 
             $input['password'] = Hash::make($input['password']);
-        }else{
+        } else {
             $input = Arr::except($input,array('password'));    
         }
     
         $user->update($input);
         DB::table('model_has_roles')->where('model_id',$user->id)->delete();
     
-        $user->assignRole($request->input('roles'));
+        $user->assignRole([$input['role']]);
     
         Session::flash('success', 'Usuário atualizado com sucesso.');
         return redirect()->route('users.index');

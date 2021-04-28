@@ -27,7 +27,7 @@ class StoreUserRequest extends FormRequest
             'name'      => 'required',
             'email'     => 'required|email|unique:users,email',
             'password'  => 'required|min:8|same:confirm-password',
-            'roles'     => 'required'
+            'role'     => 'required'
         ];
     }
 
@@ -42,7 +42,7 @@ class StoreUserRequest extends FormRequest
             'name.required'     =>   'O campo Nome é obrigatório!',
             'email.required'    =>   'O campo Email é obrigatório!',
             'password.required' =>   'O campo Senha é obrigatório!',
-            'roles.required'    =>   'O campo Papel é obrigatório!',
+            'role.required'     =>   'O campo Papel é obrigatório!',
             'email'             =>   'Insira um email válido!',
             'unique'            =>   'O email inserido já foi cadastrado!',
             'min'               =>   'A senha deve conter no mínimo :min caracteres!',

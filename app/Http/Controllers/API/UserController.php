@@ -35,7 +35,7 @@ class UserController extends BaseController
     {
         $users = User::all();
 
-        return $this->sendResponse(UserResource::collection($users), 'Roles retrieved successfully.');
+        return $this->sendResponse(UserResource::collection($users), 'Users retrieved successfully.');
     }
 
     /**
@@ -52,7 +52,7 @@ class UserController extends BaseController
             'name'      => 'required',
             'email'     => 'required|email|unique:users,email',
             'password'  => 'required|min:8|same:confirm-password',
-            'roles'     => 'required'
+            'role'      => 'required'
         ]);
    
         if($validator->fails()){
@@ -63,7 +63,7 @@ class UserController extends BaseController
         $input['password'] = Hash::make($input['password']);
         
         $user = User::create($input);
-        $user->assignRole($request->input('roles'));
+        $user->assignRole([$input['role']]);
    
         return $this->sendResponse(new UserResource($user), 'User created successfully.');
     } 
@@ -98,7 +98,7 @@ class UserController extends BaseController
             'name'      => 'required',
             'email'     => 'required|email|unique:users,email,'.$user->id,
             'password'  => 'nullable|min:8|same:confirm-password',
-            'roles'     => 'required'
+            'role'      => 'required'
         ]);
    
         if($validator->fails()){
@@ -114,7 +114,7 @@ class UserController extends BaseController
         $user->update($input);
         DB::table('model_has_roles')->where('model_id',$user->id)->delete();
     
-        $user->assignRole($request->input('roles'));
+        $user->assignRole([$input['role']]);
    
         return $this->sendResponse(new UserResource($user), 'User updated successfully.');
     }
@@ -134,6 +134,6 @@ class UserController extends BaseController
 
         $user->delete();
    
-        return $this->sendResponse([], 'Role deleted successfully.');
+        return $this->sendResponse([], 'User deleted successfully.');
     }
 }

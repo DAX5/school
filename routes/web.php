@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfessorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,8 @@ use App\Http\Controllers\UserController;
 |
 */
 
+require __DIR__.'/auth.php';
+
 Route::get('/', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
@@ -23,10 +26,17 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+Route::middleware('auth')->group( function () {
+    Route::get('roles/list', [RoleController::class, 'getRoles'])->name('roles.list');
+    Route::resource('roles', RoleController::class)->middleware(['auth']);
+});
 
-Route::get('roles/list', [RoleController::class, 'getRoles'])->name('roles.list');
-Route::resource('roles', RoleController::class)->middleware(['auth']);
+Route::middleware('auth')->group( function () {
+    Route::get('users/list', [UserController::class, 'getUsers'])->name('users.list');
+    Route::resource('users', UserController::class);
+});
 
-Route::get('users/list', [UserController::class, 'getUsers'])->name('users.list');
-Route::resource('users', UserController::class)->middleware(['auth']);
+Route::middleware('auth')->group( function () {
+    Route::get('professors/list', [ProfessorController::class, 'getProfessors'])->name('professors.list');
+    Route::resource('professors', ProfessorController::class)->middleware(['auth']);
+});

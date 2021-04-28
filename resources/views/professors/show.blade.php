@@ -1,5 +1,5 @@
 @section('title')
-Usuário
+Professor
 @endsection
 
 <x-app-layout>
@@ -12,7 +12,7 @@ Usuário
                         <div class="row">
                             <div class="col-lg-12 margin-tb">
                                 <div class="pull-left">
-                                    <h2>Usuário</h2>
+                                    <h2>Professor</h2>
                                 </div>
                             </div>
                         </div>
@@ -21,25 +21,25 @@ Usuário
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
                                     <strong>Nome:</strong>
-                                    <p>{{ $user->name }}</p>
+                                    <p>{{ $professor->name }}</p>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    <strong>Disciplina:</strong>
+                                    <p>{{ $professor->disciplina }}</p>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
                                     <strong>Email</strong>
-                                    <p>{{ $user->email }}</p>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                <div class="form-group">
-                                    <strong>Papel</strong>
-                                    <p>{{ $user->roles->pluck('name')[0] }}</p>
+                                    <p>{{ $professor->user->email }}</p>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                            <a class="btn btn-primary" href="{{ route('users.index') }}" title="Go back"> <i class="fas fa-backward "></i> </a>
+                            <a class="btn btn-primary" href="{{ route('professors.index') }}" title="Go back"> <i class="fas fa-backward "></i> </a>
                         </div>
                         
                     </div>

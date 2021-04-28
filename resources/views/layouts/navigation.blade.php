@@ -15,6 +15,11 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @can('professor-list')
+                    <x-nav-link :href="route('professors.index')" :active="request()->routeIs('professors.index')">
+                        {{ __('Professores') }}
+                    </x-nav-link>
+                    @endcan
                     @can('user-list')
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                         {{ __('Usuários') }}
@@ -76,14 +81,21 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            @hasrole('admin')
+            @can('professor-list')
+            <x-responsive-nav-link :href="route('professors.index')" :active="request()->routeIs('professors.index')">
+                {{ __('Professores') }}
+            </x-responsive-nav-link>
+            @endcan
+            @can('user-list')
             <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                 {{ __('Usuários') }}
             </x-responsive-nav-link>
-            @endhasrole
+            @endcan
+            @can('role-list')
             <x-responsive-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.index')">
                 {{ __('Papeis no sistema') }}
             </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\API\ProfessorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,4 +26,8 @@ Route::post('login', [RegisterController::class, 'login']);
      
 Route::middleware('auth:api')->group( function () {
     Route::resource('users', UserController::class);
+});
+
+Route::middleware('auth:api')->group( function () {
+    Route::resource('professors', ProfessorController::class);
 });
