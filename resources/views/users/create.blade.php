@@ -32,6 +32,17 @@ Novo Usuário
                             <div class="row">
                                 @include('users.fields')
 
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        <strong>Perfil:</strong>
+                                        {!! Form::select('role', $roles, [], array('placeholder' => 'Selecione um perfil','class' => 'form-control','id' => 'role')) !!}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" id="complementar"></div>
+                                
+                            <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary">Salvar</button>
                                     <a class="btn btn-primary" href="{{ route('users.index') }}" title="Go back"> <i class="fas fa-backward "></i> </a>
@@ -45,3 +56,47 @@ Novo Usuário
         </div>
     </div>
 </x-app-layout>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    $(window).on('load',function(){
+        $('#role').val('');
+    });
+
+    $('#role').change(function() {
+        
+        let role = $("#role option:selected").val();
+        
+        if(role === 'Admin') {
+            $('#complementar').empty();
+        } else if(role === 'Professor') {
+            $('#complementar').empty();
+            $('#complementar').append(`
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <hr>
+                    <h4>Dados complementares</h4>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Disciplina:</strong>
+                        <input type="text" class="form-control" placeholder="Disciplina" name="disciplina" />
+                    </div>
+                </div>
+            `);
+        } else if(role === 'Aluno') {
+            $('#complementar').empty();
+            $('#complementar').append(`
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <hr>
+                    <h4>Dados complementares</h4>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Data de nascimento:</strong>
+                        <input type="date" class="form-control" name="nascimento" />
+                    </div>
+                </div>
+            `);
+        }
+    });
+</script>

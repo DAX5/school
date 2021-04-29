@@ -26,8 +26,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name'      => 'required',
             'email'     => 'required|email|unique:users,email,'.$this->user->id,
-            'password'  => 'nullable|min:8|same:confirm-password',
-            'role'      => 'required'
+            'password'  => 'nullable|min:8|same:confirm-password'
         ];
     }
 
@@ -41,7 +40,6 @@ class UpdateUserRequest extends FormRequest
         return [
             'name.required'     =>   'O campo Nome é obrigatório!',
             'email.required'    =>   'O campo Email é obrigatório!',
-            'role.required'     =>   'O campo Papel é obrigatório!',
             'email'             =>   'Insira um email válido!',
             'unique'            =>   'O email inserido já foi cadastrado!',
             'min'               =>   'A senha deve conter no mínimo :min caracteres!',

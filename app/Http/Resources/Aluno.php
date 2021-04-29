@@ -18,7 +18,8 @@ class Aluno extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->user->email,
-            'nascimento' => $this->nascimento
+            'nascimento' => $this->nascimento,
+            'turma' => $this->turma->name
         ];
     }
 }

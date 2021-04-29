@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use DB;
 use Hash;
 use App\Models\User;
+use App\Models\Aluno;
+use App\Models\Professor;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -46,7 +48,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::pluck('name','name')->all();
+        $roles = [
+            'Admin' => 'Administrador',
+            'Professor' => 'Professor',
+            'Aluno' => 'Aluno',
+        ];
         return view('users.create',compact('roles'));
     }
     
@@ -63,6 +69,13 @@ class UserController extends Controller
         
         $user = User::create($input);
         $user->assignRole([$input['role']]);
+        $input['user_id'] = $user->id;
+
+        if($input['role'] == 'Professor') {
+            Professor::create($input);
+        } else if($input['role'] == 'Aluno') {
+            Aluno::create($input);
+        }
     
         Session::flash('success', 'Usuário criado com sucesso.');
         return redirect()->route('users.index');
@@ -108,11 +121,14 @@ class UserController extends Controller
         } else {
             $input = Arr::except($input,array('password'));    
         }
-    
+        
         $user->update($input);
-        DB::table('model_has_roles')->where('model_id',$user->id)->delete();
-    
-        $user->assignRole([$input['role']]);
+        
+        if($user->roles->pluck('name')[0] == 'Professor') {
+            $user->professor->update(['name' => $input['name']]);
+        } else if($user->roles->pluck('name')[0] == 'Aluno') {
+            $user->aluno->update(['name' => $input['name']]);
+        }
     
         Session::flash('success', 'Usuário atualizado com sucesso.');
         return redirect()->route('users.index');
@@ -128,7 +144,7 @@ class UserController extends Controller
     {
         $admin = DB::table('roles')->first();
         if($user->hasRole($admin->name)) {
-            Session::flash('error', 'Impossível remover um usuário com papel '.$admin->name.'.');
+            Session::flash('error', 'Impossível remover um usuário com perfil '.$admin->name.'.');
             return redirect()->route('users.index');
         }
 

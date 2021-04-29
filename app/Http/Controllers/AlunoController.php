@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use Hash;
 use App\Models\User;
 use App\Models\Aluno;
+use App\Models\Turma;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
-use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreAlunoRequest;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\UpdateAlunoRequest;
     
 class AlunoController extends Controller
@@ -35,6 +36,7 @@ class AlunoController extends Controller
      */
     public function index()
     {
+        
         return view('alunos.index');
     }
     
@@ -45,7 +47,12 @@ class AlunoController extends Controller
      */
     public function create()
     {
-        return view('alunos.create');
+        $all_turmas = Turma::get();
+        $turmas = [];
+        foreach($all_turmas as $turma) {
+            $turmas[$turma->id] = $turma->name;
+        }
+        return view('alunos.create',compact('turmas'));
     }
     
     /**
@@ -88,8 +95,13 @@ class AlunoController extends Controller
      */
     public function edit(Aluno $aluno)
     {
+        $all_turmas = Turma::get();
+        $turmas = [];
+        foreach($all_turmas as $turma) {
+            $turmas[$turma->id] = $turma->name;
+        }
         $aluno->email = $aluno->user->email;
-        return view('alunos.edit',compact('aluno'));
+        return view('alunos.edit',compact('aluno','turmas'));
     }
     
     /**
@@ -149,6 +161,9 @@ class AlunoController extends Controller
                 })
                 ->editColumn('nascimento', function($row) {
                     return date('d/m/Y', strtotime($row->nascimento));
+                })
+                ->addColumn('turma', function($row) {
+                    return $row->turma->name;
                 })
                 ->addColumn('action', function($row){
                     $edit = '';

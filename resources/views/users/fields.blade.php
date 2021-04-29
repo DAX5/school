@@ -22,9 +22,3 @@
         {!! Form::password('confirm-password', array('placeholder' => 'Confirmação da senha','class' => 'form-control')) !!}
     </div>
 </div>
-<div class="col-xs-12 col-sm-12 col-md-12">
-    <div class="form-group">
-        <strong>Papel:</strong>
-        {!! Form::select('role', $roles, isset($userRole) ? $userRole : [], array('placeholder' => 'Selecione um papel no sistema','class' => 'form-control')) !!}
-    </div>
-</div>

@@ -26,7 +26,7 @@ Usuários
                                     <th>No</th>
                                     <th>Nome</th>
                                     <th>Email</th>
-                                    <th>Papel</th>
+                                    <th>Perfil</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

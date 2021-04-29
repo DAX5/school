@@ -60,7 +60,7 @@ class RoleController extends Controller
         $role = Role::create(['name' => $request->input('name')]);
         $role->syncPermissions($request->input('permission'));
     
-        Session::flash('success', 'Papel do sistema criado com sucesso.');
+        Session::flash('success', 'Perfil criado com sucesso.');
         return redirect()->route('roles.index');
     }
 
@@ -109,7 +109,7 @@ class RoleController extends Controller
     
         $role->syncPermissions($request->input('permission'));
     
-        Session::flash('success', 'Papel do sistema atualizado com sucesso.');
+        Session::flash('success', 'Perfil atualizado com sucesso.');
         return redirect()->route('roles.index');
     }
     /**
@@ -123,13 +123,13 @@ class RoleController extends Controller
         $in_use = DB::table('model_has_roles')->where('role_id', $role->id)->first();
         
         if($in_use) {
-            Session::flash('error', 'Impossivel remover o papel selecionado pois existem usuários em uso!');
+            Session::flash('error', 'Impossivel remover o perfil selecionado pois existem usuários em uso!');
             return redirect()->route('roles.index');
         }
         
         $role->delete();
         
-        Session::flash('success', 'Papel do sistema removido com sucesso.');
+        Session::flash('success', 'Perfil removido com sucesso.');
         return redirect()->route('roles.index');
     }
 
@@ -153,7 +153,7 @@ class RoleController extends Controller
                     }
                     if(auth()->user()->can('role-delete')) {
                         $delete_open = '<form action="'. route('roles.destroy', $row->id) .'" method="POST"> ';
-                        $delete_close = csrf_field() . ' <input type="hidden" name="_method" value="DELETE"><button type="submit" class="delete btn btn-danger btn-sm" title="Remover" onclick="return confirm(\'Tem certeza que deseja remover o papel '. $row->name .'?\')"><i class="fa fa-trash"></i></button> </form>';
+                        $delete_close = csrf_field() . ' <input type="hidden" name="_method" value="DELETE"><button type="submit" class="delete btn btn-danger btn-sm" title="Remover" onclick="return confirm(\'Tem certeza que deseja remover o perfil '. $row->name .'?\')"><i class="fa fa-trash"></i></button> </form>';
                     }
                     $actionBtn = $delete_open . '<a href="' . route('roles.show', $row->id) . '" class="show btn btn-primary btn-sm" title="Mostrar"><i class="fa fa-eye"></i></a> '.$edit . $delete_close;
                     return $actionBtn;

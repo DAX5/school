@@ -1,5 +1,5 @@
 @section('title')
-Novo Papel
+Novo Perfil
 @endsection
 
 <x-app-layout>
@@ -12,7 +12,7 @@ Novo Papel
                         <div class="row">
                             <div class="col-lg-12 margin-tb">
                                 <div class="pull-left">
-                                    <h2>Novo Papel</h2>
+                                    <h2>Novo Perfil</h2>
                                 </div>
                             </div>
                         </div>

@@ -1,5 +1,5 @@
 @section('title')
-Editar Papel
+Editar Perfil
 @endsection
 
 <x-app-layout>
@@ -12,7 +12,7 @@ Editar Papel
                         <div class="row">
                             <div class="col-lg-12 margin-tb">
                                 <div class="pull-left">
-                                    <h2>Editar Papel</h2>
+                                    <h2>Editar Perfil</h2>
                                 </div>
                             </div>
                         </div>

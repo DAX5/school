@@ -32,7 +32,7 @@ Usuário
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    <strong>Papel</strong>
+                                    <strong>Perfil</strong>
                                     <p>{{ $user->roles->pluck('name')[0] }}</p>
                                 </div>
                             </div>

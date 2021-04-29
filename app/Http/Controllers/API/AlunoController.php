@@ -52,7 +52,8 @@ class AlunoController extends BaseController
             'name'          => 'required',
             'email'         => 'required|email|unique:users,email',
             'password'      => 'required|min:8|same:confirm-password',
-            'nascimento'    => 'required|date_format:Y-m-d'
+            'nascimento'    => 'required|date_format:Y-m-d',
+            'turma_id'      => 'required'
         ]);
    
         if($validator->fails()){
@@ -101,7 +102,8 @@ class AlunoController extends BaseController
             'name'          => 'required',
             'email'         => 'required|email|unique:users,email,'.$aluno->user->id,
             'password'      => 'nullable|min:8|same:confirm-password',
-            'nascimento'    => 'required|date_format:Y-m-d'
+            'nascimento'    => 'required|date_format:Y-m-d',
+            'turma_id'      => 'required'
         ]);
    
         if($validator->fails()){
@@ -110,7 +112,7 @@ class AlunoController extends BaseController
 
         if(!empty($input['password'])){ 
             $input['password'] = Hash::make($input['password']);
-        }else{
+        } else {
             $input = Arr::except($input,array('password'));    
         }
    

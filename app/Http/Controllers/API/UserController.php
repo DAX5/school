@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
    
 use Validator;
 use App\Models\User;
+use App\Models\Aluno;
+use App\Models\Professor;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -49,10 +51,13 @@ class UserController extends BaseController
         $input = $request->all();
    
         $validator = Validator::make($input, [
-            'name'      => 'required',
-            'email'     => 'required|email|unique:users,email',
-            'password'  => 'required|min:8|same:confirm-password',
-            'role'      => 'required'
+            'name'          => 'required',
+            'email'         => 'required|email|unique:users,email',
+            'password'      => 'required|min:8|same:confirm-password',
+            'role'          => 'required',
+            'disciplina'    => 'required_if:role,==,Professor|nullable',
+            'nascimento'    => 'required_if:role,==,Aluno|nullable|date_format:Y-m-d',
+            'turma_id'      => 'required_if:role,==,Aluno|nullable'
         ]);
    
         if($validator->fails()){
@@ -64,6 +69,14 @@ class UserController extends BaseController
         
         $user = User::create($input);
         $user->assignRole([$input['role']]);
+
+        $input['user_id'] = $user->id;
+
+        if($input['role'] == 'Professor') {
+            Professor::create($input);
+        } else if($input['role'] == 'Aluno') {
+            Aluno::create($input);
+        }
    
         return $this->sendResponse(new UserResource($user), 'User created successfully.');
     } 
@@ -97,8 +110,7 @@ class UserController extends BaseController
         $validator = Validator::make($input, [
             'name'      => 'required',
             'email'     => 'required|email|unique:users,email,'.$user->id,
-            'password'  => 'nullable|min:8|same:confirm-password',
-            'role'      => 'required'
+            'password'  => 'nullable|min:8|same:confirm-password'
         ]);
    
         if($validator->fails()){
@@ -112,9 +124,12 @@ class UserController extends BaseController
         }
    
         $user->update($input);
-        DB::table('model_has_roles')->where('model_id',$user->id)->delete();
-    
-        $user->assignRole([$input['role']]);
+
+        if($user->roles->pluck('name')[0] == 'Professor') {
+            $user->professor->update(['name' => $input['name']]);
+        } else if($user->roles->pluck('name')[0] == 'Aluno') {
+            $user->aluno->update(['name' => $input['name']]);
+        }
    
         return $this->sendResponse(new UserResource($user), 'User updated successfully.');
     }

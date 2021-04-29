@@ -1,11 +1,11 @@
 @section('title')
-Papeis no sistema
+Perfis
 @endsection
 
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Papeis no sistema') }}
+            {{ __('Perfis') }}
         </h2>
     </x-slot>
     
@@ -14,9 +14,9 @@ Papeis no sistema
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="container mt-5">
-                        <h2 class="mb-4">Papeis no sistema 
+                        <h2 class="mb-4">Perfis 
                             @can('role-create')
-                                <a class="btn btn-primary" href="{{ route('roles.create') }}" title="Novo papel"> Novo </a>
+                                <a class="btn btn-primary" href="{{ route('roles.create') }}" title="Novo perfil"> Novo </a>
                             @endcan
                         </h2>
 

@@ -27,6 +27,7 @@ Alunos
                                     <th>Nome</th>
                                     <th>Email</th>
                                     <th>Data Nascimento</th>
+                                    <th>Turma</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -55,6 +56,7 @@ Alunos
             {data: 'name', name: 'name'},
             {data: 'email', name: 'email'},
             {data: 'nascimento', name: 'nascimento'},
+            {data: 'turma', name: 'turma'},
             {
                 data: 'action', 
                 name: 'action', 

@@ -32,7 +32,7 @@
                     @endcan
                     @can('role-list')
                     <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.index')">
-                        {{ __('Papeis no sistema') }}
+                        {{ __('Perfis') }}
                     </x-nav-link>
                     @endcan
                 </div>
@@ -103,7 +103,7 @@
             @endcan
             @can('role-list')
             <x-responsive-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.index')">
-                {{ __('Papeis no sistema') }}
+                {{ __('Perfis') }}
             </x-responsive-nav-link>
             @endcan
         </div>
