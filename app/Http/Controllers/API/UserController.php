@@ -156,11 +156,8 @@ class UserController extends BaseController
         
         $professor = $user->professor;
         if($professor) {
-            $aulas = Aula::where('professor_id', $professor->id)->get();
-            foreach($aulas as $aula) {
-                DB::table('aula_aluno')->where('aula_id', $aula->id)->delete();
-                $aula->delete();
-            }
+            DB::table('aula_aluno')->where('professor_id', $professor->id)->delete();
+            Aula::where('professor_id', $professor->id)->delete();
             $professor->delete();
         }
         
