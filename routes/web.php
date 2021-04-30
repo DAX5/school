@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AulaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AlunoController;
@@ -23,9 +24,9 @@ Route::get('/', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group( function () {
     Route::get('roles/list', [RoleController::class, 'getRoles'])->name('roles.list');
@@ -45,4 +46,13 @@ Route::middleware('auth')->group( function () {
 Route::middleware('auth')->group( function () {
     Route::get('alunos/list', [AlunoController::class, 'getAlunos'])->name('alunos.list');
     Route::resource('alunos', AlunoController::class)->middleware(['auth']);
+});
+
+Route::middleware('auth')->group( function () {
+    Route::get('aulas/list', [AulaController::class, 'getAulas'])->name('aulas.list');
+    Route::get('aulas/{aula}/register', [AulaController::class, 'register'])->name('aulas.register');
+    Route::get('aulas/{aula}/cancel', [AulaController::class, 'cancel'])->name('aulas.cancel');
+    Route::get('aulas/{aula}/accept/{aluno}', [AulaController::class, 'accept'])->name('aulas.accept');
+    Route::post('aulas/reject', [AulaController::class, 'reject'])->name('aulas.reject');
+    Route::resource('aulas', AulaController::class)->middleware(['auth']);
 });

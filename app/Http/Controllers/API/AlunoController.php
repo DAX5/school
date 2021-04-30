@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Aluno;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Aluno as AlunoResource;
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -132,9 +133,10 @@ class AlunoController extends BaseController
      */
     public function destroy(Aluno $aluno)
     {
+        DB::table('aula_aluno')->where('aluno_id', $aluno->id)->delete();
         $user = $aluno->user;
-        $user->delete();
         $aluno->delete();
+        $user->delete();
    
         return $this->sendResponse([], 'Aluno deleted successfully.');
     }

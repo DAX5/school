@@ -21,4 +21,8 @@ class Turma extends Model
     public function aluno(){
         return $this->hasOne(Aluno::class, 'turma_id');
     }
+
+    public function aula(){
+        return $this->hasOne(Aula::class, 'turma_id');
+    }
 }

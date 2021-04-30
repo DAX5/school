@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
    
 use Validator;
+use App\Models\Aula;
 use App\Models\User;
 use App\Models\Aluno;
 use App\Models\Professor;
@@ -147,6 +148,22 @@ class UserController extends BaseController
             return $this->sendError('Unable to remove a user with role '.$admin->name.'.');
         }
 
+        $aluno = $user->aluno;
+        if($aluno) {
+            DB::table('aula_aluno')->where('aluno_id', $aluno->id)->delete();
+            $aluno->delete();
+        }
+        
+        $professor = $user->professor;
+        if($professor) {
+            $aulas = Aula::where('professor_id', $professor->id)->get();
+            foreach($aulas as $aula) {
+                DB::table('aula_aluno')->where('aula_id', $aula->id)->delete();
+                $aula->delete();
+            }
+            $professor->delete();
+        }
+        
         $user->delete();
    
         return $this->sendResponse([], 'User deleted successfully.');

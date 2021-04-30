@@ -23,4 +23,8 @@ class Professor extends Model
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function aula(){
+        return $this->hasOne(Aula::class, 'professor_id');
+    }
 }

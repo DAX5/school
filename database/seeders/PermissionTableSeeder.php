@@ -30,7 +30,15 @@ class PermissionTableSeeder extends Seeder
            'aluno-list',
            'aluno-create',
            'aluno-edit',
-           'aluno-delete'
+           'aluno-delete',
+           'aula-list',
+           'aula-create',
+           'aula-edit',
+           'aula-delete',
+           'aula-register',
+           'aula-accept',
+           'aula-cancel',
+           'aula-reject'
         ];
      
         foreach ($permissions as $permission) {

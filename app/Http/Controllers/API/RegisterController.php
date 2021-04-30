@@ -2,11 +2,13 @@
    
 namespace App\Http\Controllers\API;
    
-use Illuminate\Http\Request;
-use App\Http\Controllers\API\BaseController as BaseController;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Validator;
+use App\Models\User;
+use App\Models\Aluno;
+use App\Models\Professor;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\API\BaseController as BaseController;
    
 class RegisterController extends BaseController
 {
@@ -18,10 +20,13 @@ class RegisterController extends BaseController
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'c_password' => 'required|same:password',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|same:c_password|min:8',
+            'role' => 'required|in:Aluno,Professor',
+            'disciplina' => 'required_if:role,==,Professor|nullable',
+            'nascimento' => 'required_if:role,==,Aluno|nullable|date_format:Y-m-d',
+            'turma_id' => 'required_if:role,==,Aluno|nullable'
         ]);
    
         if($validator->fails()){
@@ -30,7 +35,17 @@ class RegisterController extends BaseController
    
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
+
         $user = User::create($input);
+        $user->assignRole([$input['role']]);
+        $input['user_id'] = $user->id;
+
+        if($input['role'] == 'Professor') {
+            Professor::create($input);
+        } else if($input['role'] == 'Aluno') {
+            Aluno::create($input);
+        }
+
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         $success['name'] =  $user->name;
    

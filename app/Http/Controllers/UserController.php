@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
     
 use DB;
 use Hash;
+use App\Models\Aula;
 use App\Models\User;
 use App\Models\Aluno;
 use App\Models\Professor;
@@ -147,7 +148,23 @@ class UserController extends Controller
             Session::flash('error', 'Impossível remover um usuário com perfil '.$admin->name.'.');
             return redirect()->route('users.index');
         }
-
+        
+        $aluno = $user->aluno;
+        if($aluno) {
+            DB::table('aula_aluno')->where('aluno_id', $aluno->id)->delete();
+            $aluno->delete();
+        }
+        
+        $professor = $user->professor;
+        if($professor) {
+            $aulas = Aula::where('professor_id', $professor->id)->get();
+            foreach($aulas as $aula) {
+                DB::table('aula_aluno')->where('aula_id', $aula->id)->delete();
+                $aula->delete();
+            }
+            $professor->delete();
+        }
+        
         $user->delete();
 
         Session::flash('success', 'Usuário removido com sucesso.');
@@ -177,7 +194,7 @@ class UserController extends Controller
                     }
                     if(auth()->user()->can('user-delete')) {
                         $delete_open = '<form action="'. route('users.destroy', $row->id) .'" method="POST"> ';
-                        $delete_close = csrf_field() . ' <input type="hidden" name="_method" value="DELETE"><button type="submit" class="delete btn btn-danger btn-sm" title="Remover" onclick="return confirm(\'Tem certeza que deseja remover o usuário '. $row->name .'?\')"><i class="fa fa-trash"></i></button> </form>';
+                        $delete_close = csrf_field() . ' <input type="hidden" name="_method" value="DELETE"><button type="submit" class="delete btn btn-danger btn-sm" title="Remover" onclick="return confirm(\'Tem certeza que deseja remover o usuário '. $row->name .'? Todos dados relacionados ao usuário serão excluidos!\')"><i class="fa fa-trash"></i></button> </form>';
                     }
                     $actionBtn = $delete_open . '<a href="' . route('users.show', $row->id) . '" class="show btn btn-primary btn-sm" title="Mostrar"><i class="fa fa-eye"></i></a> '.$edit . $delete_close;
                     return $actionBtn;

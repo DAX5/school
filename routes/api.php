@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\AulaController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\AlunoController;
 use App\Http\Controllers\API\RegisterController;
@@ -36,3 +37,12 @@ Route::middleware('auth:api')->group( function () {
 Route::middleware('auth:api')->group( function () {
     Route::resource('alunos', AlunoController::class);
 });
+
+Route::middleware('auth:api')->group( function () {
+    Route::get('aulas/{aula}/register', [AulaController::class, 'register']);
+    Route::get('aulas/{aula}/cancel', [AulaController::class, 'cancel']);
+    Route::get('aulas/{aula}/accept/{aluno}', [AulaController::class, 'accept']);
+    Route::post('aulas/reject', [AulaController::class, 'reject']);
+    Route::resource('aulas', AulaController::class);
+});
+

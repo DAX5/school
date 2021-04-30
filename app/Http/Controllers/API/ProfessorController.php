@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\API;
    
 use Validator;
+use App\Models\Aula;
 use App\Models\User;
 use App\Models\Professor;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Professor as ProfessorResource;
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -130,9 +132,15 @@ class ProfessorController extends BaseController
      */
     public function destroy(Professor $professor)
     {
+        $aulas = Aula::where('professor_id', $professor->id)->get();
+        foreach($aulas as $aula) {
+            DB::table('aula_aluno')->where('aula_id', $aula->id)->delete();
+            $aula->delete();
+        }
+
         $user = $professor->user;
-        $user->delete();
         $professor->delete();
+        $user->delete();
    
         return $this->sendResponse([], 'Professor deleted successfully.');
     }

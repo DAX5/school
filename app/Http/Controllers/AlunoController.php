@@ -8,6 +8,7 @@ use App\Models\Aluno;
 use App\Models\Turma;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\StoreAlunoRequest;
@@ -84,6 +85,11 @@ class AlunoController extends Controller
      */
     public function show(Aluno $aluno)
     {
+        if(auth()->user()->roles->pluck('name')[0] == 'Aluno' && $aluno->id != auth()->user()->aluno->id) {
+            Session::flash('error', 'Você não pode acessar os dados do usuário selecionado!');
+            return redirect()->route('alunos.index');
+        }
+
         return view('alunos.show',compact('aluno'));
     }
     
@@ -95,6 +101,11 @@ class AlunoController extends Controller
      */
     public function edit(Aluno $aluno)
     {
+        if(auth()->user()->roles->pluck('name')[0] == 'Aluno' && $aluno->id != auth()->user()->aluno->id) {
+            Session::flash('error', 'Você não pode editar os dados do aluno selecionado!');
+            return redirect()->route('alunos.index');
+        }
+
         $all_turmas = Turma::get();
         $turmas = [];
         foreach($all_turmas as $turma) {
@@ -137,9 +148,10 @@ class AlunoController extends Controller
      */
     public function destroy(Aluno $aluno)
     {
+        DB::table('aula_aluno')->where('aluno_id', $aluno->id)->delete();
         $user = $aluno->user;
-        $user->delete();
         $aluno->delete();
+        $user->delete();
 
         Session::flash('success', 'Aluno removido com sucesso.');
         return redirect()->route('alunos.index');
@@ -153,7 +165,11 @@ class AlunoController extends Controller
     public function getAlunos(Request $request)
     {
         if ($request->ajax()) {
-            $data = Aluno::orderBy('name', 'ASC')->get();
+            if(auth()->user()->roles->pluck('name')[0] == 'Aluno') {
+                $data = Aluno::where('id', auth()->user()->aluno->id)->get();
+            } else {
+                $data = Aluno::orderBy('name', 'ASC')->get();
+            }
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('email', function($row) {
@@ -174,7 +190,7 @@ class AlunoController extends Controller
                     }
                     if(auth()->user()->can('aluno-delete')) {
                         $delete_open = '<form action="'. route('alunos.destroy', $row->id) .'" method="POST"> ';
-                        $delete_close = csrf_field() . ' <input type="hidden" name="_method" value="DELETE"><button type="submit" class="delete btn btn-danger btn-sm" title="Remover" onclick="return confirm(\'Tem certeza que deseja remover o aluno '. $row->name .'?\')"><i class="fa fa-trash"></i></button> </form>';
+                        $delete_close = csrf_field() . ' <input type="hidden" name="_method" value="DELETE"><button type="submit" class="delete btn btn-danger btn-sm" title="Remover" onclick="return confirm(\'Tem certeza que deseja remover o aluno '. $row->name .'? Todos dados relacionados ao aluno serão excluidos!\')"><i class="fa fa-trash"></i></button> </form>';
                     }
                     $actionBtn = $delete_open . '<a href="' . route('alunos.show', $row->id) . '" class="show btn btn-primary btn-sm" title="Mostrar"><i class="fa fa-eye"></i></a> '.$edit . $delete_close;
                     return $actionBtn;
