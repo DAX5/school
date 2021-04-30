@@ -40,7 +40,7 @@ class AulaController extends BaseController
     public function index()
     {
         if(auth()->user()->roles->pluck('name')[0] == 'Aluno') {
-            $aulas = Aula::where('turma_id', auth()->user()->aula->turma_id)->orderBy('horario', 'asc')->get();
+            $aulas = Aula::where('turma_id', auth()->user()->aluno->turma_id)->orderBy('horario', 'asc')->get();
         } else {
             $aulas = Aula::all();
         }
@@ -171,7 +171,7 @@ class AulaController extends BaseController
             if ($inscricao->aula_id == $aula->id && $inscricao->aluno_id == auth()->user()->aluno->id) {
                 return $this->sendError('You already signed up for this aula.');
             }
-            if ($inscricao->horario == $aula->horario) {
+            if ($inscricao->horario == $aula->horario && $inscricao->aluno_id == auth()->user()->aluno->id) {
                 return $this->sendError('You are already enrolled in another aula at the same time.');
             }
         }

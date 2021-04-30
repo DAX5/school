@@ -14,12 +14,9 @@ class CreateAulaAlunoTable extends Migration
     public function up()
     {
         Schema::create('aula_aluno', function (Blueprint $table) {
-            $table->integer('aula_id')->unsiged();
-            $table->foreign('aula_id')->references('id')->on('aulas')->onDelete('cascade');
-            $table->integer('aluno_id')->unsiged();
-            $table->foreign('aluno_id')->references('id')->on('alunos')->onDelete('cascade');
-            $table->integer('professor_id')->unsiged();
-            $table->foreign('professor_id')->references('id')->on('professor')->onDelete('cascade');
+            $table->foreignId('aula_id')->constrained()->onDelete('cascade');
+            $table->foreignId('aluno_id')->constrained()->onDelete('cascade');
+            $table->foreignId('professor_id')->constrained()->onDelete('cascade');
             $table->string('status');
             $table->string('mensagem')->nullable();
             $table->tinyInteger('visualizado');

@@ -15,10 +15,8 @@ class CreateAulasTable extends Migration
     {
         Schema::create('aulas', function (Blueprint $table) {
             $table->id();
-            $table->integer('professor_id')->unsigned();
-            $table->foreign('professor_id')->references('id')->on('professores')->onDelete('cascade');
-            $table->integer('turma_id')->unsigned();
-            $table->foreign('turma_id')->references('id')->on('turmas')->onDelete('cascade');
+            $table->foreignId('professor_id')->constrained()->onDelete('cascade');
+            $table->foreignId('turma_id')->constrained()->onDelete('cascade');
             $table->string('titulo');
             $table->string('assunto');
             $table->datetime('horario');

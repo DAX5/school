@@ -27,6 +27,8 @@ Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
      
 Route::middleware('auth:api')->group( function () {
+    Route::get('notification', [UserController::class, 'notification']);
+    Route::post('readNotification', [UserController::class, 'readNotification']);
     Route::resource('users', UserController::class);
 });
 

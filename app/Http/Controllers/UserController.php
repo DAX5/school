@@ -7,6 +7,7 @@ use Hash;
 use App\Models\Aula;
 use App\Models\User;
 use App\Models\Aluno;
+use App\Models\Turma;
 use App\Models\Professor;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -54,7 +55,12 @@ class UserController extends Controller
             'Professor' => 'Professor',
             'Aluno' => 'Aluno',
         ];
-        return view('users.create',compact('roles'));
+        $all_turmas = Turma::get();
+        $turmas = [];
+        foreach($all_turmas as $turma) {
+            $turmas[$turma->id] = $turma->name;
+        }
+        return view('users.create',compact('roles','turmas'));
     }
     
     /**
@@ -204,7 +210,14 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Send notification for Aluno or Professor.
+     * GET|HEAD /notification
+     *
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
     public function notification() {
+        $aula = null;
         if(auth()->user()->roles->pluck('name')[0] == 'Aluno') {
             $aula = DB::table('aula_aluno')
                 ->select(DB::raw('aula_aluno.*, aulas.titulo as titulo'))
@@ -229,6 +242,12 @@ class UserController extends Controller
         return response()->json($aula);  
     }
 
+    /**
+     * Read notification for Aluno.
+     * POST|HEAD /readNotification
+     *
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
     public function readNotification(Request $request) {
         DB::table('aula_aluno')->where('aula_id',$request->aula_id)->where('aluno_id',auth()->user()->aluno->id)->update(['visualizado' => 1]);
         return response()->json($request->all());  

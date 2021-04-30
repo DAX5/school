@@ -70,6 +70,12 @@ class AulaController extends Controller
             return redirect()->route('aulas.index');
         }
 
+        $aula = Aula::where('professor_id',auth()->user()->professor->id)->where('horario',$request->horario)->first();
+        if($aula) {
+            Session::flash('error', 'Você já tem uma aula marcada para o mesmo horário!');
+            return redirect()->route('aulas.index');
+        }
+
         $input = $request->all();
         $input['professor_id'] = auth()->user()->professor->id;
         
@@ -173,7 +179,7 @@ class AulaController extends Controller
                 Session::flash('error', 'Você já fez inscrição nessa aula!');
                 return redirect()->route('aulas.index');
             }
-            if ($inscricao->horario == $aula->horario) {
+            if ($inscricao->horario == $aula->horario && $inscricao->aluno_id == auth()->user()->aluno->id) {
                 Session::flash('error', 'Você já está inscrito em outra aula no mesmo horário!');
                 return redirect()->route('aulas.index');
             }

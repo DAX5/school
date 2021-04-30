@@ -24,15 +24,14 @@ Route::get('/', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('notification', [UserController::class, 'notification']);
-Route::post('readNotification', [UserController::class, 'readNotification']);
-
 Route::middleware('auth')->group( function () {
     Route::get('roles/list', [RoleController::class, 'getRoles'])->name('roles.list');
     Route::resource('roles', RoleController::class)->middleware(['auth']);
 });
 
 Route::middleware('auth')->group( function () {
+    Route::get('notification', [UserController::class, 'notification']);
+    Route::post('readNotification', [UserController::class, 'readNotification']);
     Route::get('users/list', [UserController::class, 'getUsers'])->name('users.list');
     Route::resource('users', UserController::class);
 });
