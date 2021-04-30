@@ -182,6 +182,7 @@ class AulaController extends Controller
         DB::table('aula_aluno')->insert([
             'aula_id'       => $aula->id,
             'aluno_id'      => auth()->user()->aluno->id,
+            'professor_id'  => $aula->professor_id,
             'status'        => 'Pendente',
             'visualizado'   => 1
         ]);

@@ -24,9 +24,8 @@ Route::get('/', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth'])->name('dashboard');
+Route::get('notification', [UserController::class, 'notification']);
+Route::post('readNotification', [UserController::class, 'readNotification']);
 
 Route::middleware('auth')->group( function () {
     Route::get('roles/list', [RoleController::class, 'getRoles'])->name('roles.list');

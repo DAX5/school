@@ -4,6 +4,5 @@
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
-
     
 </x-app-layout>

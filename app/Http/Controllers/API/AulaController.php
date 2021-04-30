@@ -179,6 +179,7 @@ class AulaController extends BaseController
         $inscricao = [
             'aula_id'       => $aula->id,
             'aluno_id'      => auth()->user()->aluno->id,
+            'professor_id'  => $aula->professor_id,
             'status'        => 'Pendente',
             'visualizado'   => 1
         ];

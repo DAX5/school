@@ -132,11 +132,8 @@ class ProfessorController extends BaseController
      */
     public function destroy(Professor $professor)
     {
-        $aulas = Aula::where('professor_id', $professor->id)->get();
-        foreach($aulas as $aula) {
-            DB::table('aula_aluno')->where('aula_id', $aula->id)->delete();
-            $aula->delete();
-        }
+        DB::table('aula_aluno')->where('professor_id', $professor->id)->delete();
+        Aula::where('professor_id', $professor->id)->delete();
 
         $user = $professor->user;
         $professor->delete();

@@ -203,4 +203,34 @@ class UserController extends Controller
                 ->make(true);
         }
     }
+
+    public function notification() {
+        if(auth()->user()->roles->pluck('name')[0] == 'Aluno') {
+            $aula = DB::table('aula_aluno')
+                ->select(DB::raw('aula_aluno.*, aulas.titulo as titulo'))
+                ->where('aluno_id', auth()->user()->aluno->id)
+                ->where('visualizado', 0)
+                ->leftJoin('aulas', 'aula_aluno.aula_id', 'aulas.id')
+                ->first();
+            if($aula) {
+                $aula->perfil = 'Aluno';
+            }
+        } else if(auth()->user()->roles->pluck('name')[0] == 'Professor') {
+            $aula = DB::table('aula_aluno')
+                ->select(DB::raw('aula_aluno.*, aulas.titulo as titulo'))
+                ->where('aula_aluno.professor_id', auth()->user()->professor->id)
+                ->where('status', 'Pendente')
+                ->leftJoin('aulas', 'aula_aluno.aula_id', 'aulas.id')
+                ->first();
+            if($aula) {
+                $aula->perfil = 'Professor';
+            }
+        }
+        return response()->json($aula);  
+    }
+
+    public function readNotification(Request $request) {
+        DB::table('aula_aluno')->where('aula_id',$request->aula_id)->where('aluno_id',auth()->user()->aluno->id)->update(['visualizado' => 1]);
+        return response()->json($request->all());  
+    }
 }

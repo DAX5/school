@@ -18,6 +18,8 @@ class CreateAulaAlunoTable extends Migration
             $table->foreign('aula_id')->references('id')->on('aulas')->onDelete('cascade');
             $table->integer('aluno_id')->unsiged();
             $table->foreign('aluno_id')->references('id')->on('alunos')->onDelete('cascade');
+            $table->integer('professor_id')->unsiged();
+            $table->foreign('professor_id')->references('id')->on('professor')->onDelete('cascade');
             $table->string('status');
             $table->string('mensagem')->nullable();
             $table->tinyInteger('visualizado');
