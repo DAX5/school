@@ -14,6 +14,7 @@ Obs.: Certifique-se de ter o MySQL 8, Composer e o PHP 7.3 ou superior instalado
 7- Execute o comando: php artisan db:seed --class=RoleTableSeeder<br>
 8- Execute o comando: php artisan db:seed --class=TurmaTableSeeder<br>
 9- Execute o comando: php artisan db:seed --class=CreateAdminUserSeeder<br>
+10- Execute o comando: php artisan serve<br>
 
 Irá gerar o usuário Admin com as credenciais:<br>
 Email: admin@email.com<br>
